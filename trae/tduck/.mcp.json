@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "tduck": {
+      "type": "http",
+      "url": "https://x.tduckcloud.com/tduck-api/mcp",
+      "timeout": 30000
+    }
+  }
+}

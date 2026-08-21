@@ -1,0 +1,21 @@
+{
+    "name": "TDuck",
+    "name_zh": "TDuck 填鸭表单",
+    "name_en": "TDuck Form",
+    "description": "Build forms and manage submission data on TDuck with natural language.",
+    "description_zh": "通过自然语言在 TDuck（填鸭表单）上创建、复制、编辑表单与题目结构，发布表单开启数据收集，分页查询与批量管理填报数据。",
+    "description_en": "Create, copy, and edit forms and question structures on TDuck, publish forms for data collection, and manage submission entries using natural language.",
+    "source": "tduck",
+    "type": "mcp",
+    "version": "0.1.0",
+    "examples_zh": [
+        "帮我建一个 2026 秋季校招简历登记表并直接发布",
+        "查询最近收集到的 10 条表单填报数据",
+        "在当前表单末尾追加一道微信号题目"
+    ],
+    "examples_en": [
+        "Help me create a 2026 campus recruitment registration form and publish it.",
+        "Query the latest 10 submission entries from this form.",
+        "Add a WeChat ID question to the end of the current form."
+    ]
+}

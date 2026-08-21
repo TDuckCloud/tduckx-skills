@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "tduck": {
+      "url": "https://x.tduckcloud.com/tduck-api/mcp",
+      "type": "http",
+      "x-workbuddy": {
+        "displayName": { "zh": "TDuck 表单 MCP", "en": "TDuck Forms MCP" },
+        "description": {
+          "zh": "连接后可通过自然语言创建/复制/编辑表单与题目，一键发布开启收集，分页查询与批量管理填报数据，管理归档文件夹。",
+          "en": "Once connected, create/copy/edit forms and question structures, publish forms, query and bulk-manage submission data, and organize folders."
+        },
+        "icon": "./avatars/tduck.png",
+        "auth": { "type": "oauth" }
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "name": "tduck-form-expert",
+  "version": "0.1.0",
+  "description": "Build forms and manage submission data on TDuck with natural language",
+  "author": {
+    "name": "TDuck",
+    "email": "support@tduck.com"
+  },
+  "agents": [
+    "./agents/tduck-form-expert.md"
+  ],
+  "skills": [],
+  "expertType": "agent",
+  "agentName": "tduck-form-expert",
+  "displayName": {
+    "en": "TDuck Form Expert",
+    "zh": "TDuck 表单专家"
+  },
+  "profession": {
+    "en": "TDuck Forms Assistant",
+    "zh": "TDuck 表单助手"
+  },
+  "displayDescription": {
+    "en": "Create forms for registration, surveys, exams, and assessments, and perform CRUD operations, as well as batch import and manage submission data.",
+    "zh": "搭建报名、问卷、在线考试、满意度调研等表单，增删改查、批量导入与管理填报数据。"
+  },
+  "avatar": "avatars/tduck.png",
+  "categoryId": "04-DataAI",
+  "defaultInitPrompt": {
+    "zh": "帮我建一个 2026 秋季校园招聘登记表并直接发布",
+    "en": "Help me create a 2026 campus recruitment registration form and publish it."
+  },
+  "plugin": "tduck-form-expert",
+  "tags": [
+    {
+      "en": "Event Registration",
+      "zh": "活动报名"
+    },
+    {
+      "en": "Questionnaire survey",
+      "zh": "问卷调研"
+    },
+    {
+      "en": "Online Exam",
+      "zh": "在线考试"
+    },
+    {
+      "en": "Data Management",
+      "zh": "数据管理"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "en": "Help me create a 2026 campus recruitment registration form and publish it.",
+      "zh": "帮我建一个 2026 秋季校园招聘登记表并直接发布"
+    },
+    {
+      "en": "Query the latest 10 submission entries from this form.",
+      "zh": "查询该表单最近收集到的 10 条填报数据"
+    },
+    {
+      "en": "Add a WeChat ID question to the end of the current form.",
+      "zh": "在当前表单末尾追加一道微信号选填题目"
+    }
+  ],
+  "dependencies": {
+    "mcpServers": "./.mcp.json"
+  }
+}

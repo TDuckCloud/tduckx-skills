@@ -1,0 +1,25 @@
+{
+  "name": "tduck",
+  "version": "0.1.0",
+  "displayName": "TDuck 填鸭表单",
+  "displayNameEn": "TDuck Form",
+  "description": "用自然语言在 TDuck（tduck.com）上搭建表单与数据收集：创建、复制、编辑表单与题目结构，批量增删改查填报数据，管理归档文件夹，一键发布与停止收集，替代登录后台手动操作。",
+  "descriptionEn": "Build forms and collect data on TDuck (tduck.com) with natural language: create, copy, and edit forms and question structures, batch manage submission entries, organize folders, and publish or stop collection with ease.",
+  "author": {
+    "name": "TDuck",
+    "email": "support@tduck.com"
+  },
+  "license": "Apache-2.0",
+  "logo": "./icon.png",
+  "keywords": [
+    "tduck",
+    "填鸭表单",
+    "form",
+    "survey",
+    "exam",
+    "data-collection"
+  ],
+  "skills": "./skills/",
+  "mcp": "./.mcp.json",
+  "connector": "./connector.json"
+}

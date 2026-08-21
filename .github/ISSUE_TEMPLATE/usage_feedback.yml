@@ -1,0 +1,49 @@
+name: 使用反馈 (Usage feedback)
+description: 提交 TDuck Skill 的问题反馈或功能建议
+title: "[TDuck Skill]: "
+labels: ["feedback"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题或建议概述
+      description: 发生了什么，或者您希望改进什么？
+    validations:
+      required: true
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 使用场景
+      description: 您正在尝试使用 TDuck Skill 执行什么任务？
+      placeholder: "例如：通过自然语言创建校招报名表、批量导入员工填报数据、添加单题..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Prompt 提示词与步骤
+      description: 请提供导致问题的 Prompt 对话或操作步骤（请脱敏个人隐私数据）。
+      placeholder: |
+        1. 连接 TDuck MCP...
+        2. 发送提示词...
+        3. 发现...
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+      description: 您期望得到的正确行为是什么？
+    validations:
+      required: false
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 补充说明
+      description: 请勿包含真实的 API Key、Secret、Access Token 或真实的表单数据。
+    validations:
+      required: false
