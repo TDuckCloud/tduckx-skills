@@ -23,7 +23,7 @@
 ### 前置条件
 
 1. **TDuck 账号**：
-   - 公有云/测试环境：[tduckcloud.com](https://dev.tduckcloud.com) 或企业对应云服务地址；
+   - 公有云/测试环境：[tduckcloud.com](https://x.tduckcloud.com) 或企业对应云服务地址；
    - 私有化部署：您团队或企业部署的 TDuck 实例地址（如 `https://form.yourcompany.com`）。
 2. **支持 MCP 的 AI 客户端**：
    - Cursor、Claude Desktop、Trae、Workbuddy、Windsurf、VSCode (Continue/Roo Code) 等均可无缝接入。
@@ -190,8 +190,8 @@ echo -n "YOUR_APP_ID:YOUR_APP_SECRET" | base64
 
 | 序号 | 姓名 | 手机号 | 应聘岗位 | 个人简历 | 提交时间 |
 | :---: | :--- | :---: | :--- | :--- | :--- |
-| 1 | 张*伟 | 138****0001 | 后端研发 | [查看简历 PDF](https://dev.tduckcloud.com/...) | 2026-08-20 11:00:00 |
-| 2 | 李*强 | 139****5678 | 后端研发 | [查看简历 PDF](https://dev.tduckcloud.com/...) | 2026-08-20 10:15:30 |
+| 1 | 张*伟 | 138****0001 | 后端研发 | [查看简历 PDF](https://x.tduckcloud.com/...) | 2026-08-20 11:00:00 |
+| 2 | 李*强 | 139****5678 | 后端研发 | [查看简历 PDF](https://x.tduckcloud.com/...) | 2026-08-20 10:15:30 |
 | … | … | … | … | … | … |
 
 > **核心价值**：查询结果位于大模型上下文内，可直接指令 AI 接续后续动作——例如：“根据这几位候选人的简历写一段面试初筛评语”或“整理为 CSV 发送到工作群”。

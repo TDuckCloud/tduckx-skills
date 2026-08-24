@@ -3,14 +3,14 @@
 /**
  * ==============================================================================
  * TDuck Skill 服务端点一键批量替换脚本 (Node.js 原生版)
- * 
+ *
  * 纯原生 Node.js 实现，零外部依赖，跨平台兼容 macOS、Linux 与 Windows。
  * 用于将本 Skill 仓库中所有文件内的 TDuck 服务地址 / MCP 端点批量替换为您自己的实际部署地址。
  *
  * 用法示例：
  *   1. 命令行直接指定新地址：
  *      node replace_endpoint.js https://x.tduckcloud.com/tduck-api
- *    
+ *
  *
  *   2. 带参数指定：
  *      node replace_endpoint.js --url https://x.tduckcloud.com/tduck-api
@@ -23,43 +23,60 @@
  * ==============================================================================
  */
 
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
 
 // 需扫描的文件后缀
 const TARGET_EXTENSIONS = new Set([
-  '.md', '.json', '.py', '.sh', '.js', '.ts', '.yml', '.yaml', '.txt', '.svg'
+  ".md",
+  ".json",
+  ".py",
+  ".sh",
+  ".js",
+  ".ts",
+  ".yml",
+  ".yaml",
+  ".txt",
+  ".svg",
 ]);
 
 // 需忽略的目录
 const IGNORE_DIRS = new Set([
-  '.git', '.idea', '.vscode', 'node_modules', 'target', 'dist', 'build', '__pycache__', '.gemini'
+  ".git",
+  ".idea",
+  ".vscode",
+  "node_modules",
+  "target",
+  "dist",
+  "build",
+  "__pycache__",
+  ".gemini",
 ]);
 
 // 排除自身脚本文件名
 const IGNORE_FILES = new Set([
-  'replace_endpoint.js',
-  'replace_endpoint.sh',
-  'replace_endpoint.py'
+  "replace_endpoint.js",
+  "replace_endpoint.sh",
+  "replace_endpoint.py",
 ]);
 
 // 常见的预置旧服务端点地址
 const KNOWN_DEFAULT_MCP_URLS = [
-  'https://dev.tduckcloud.com/tduck-api/mcp',
-  'http://localhost:8996/tduck-api/mcp'
+  "https://x.tduckcloud.com/tduck-api/mcp",
+  "http://localhost:8996/tduck-api/mcp",
 ];
 
 /**
  * 规范化输入的 URL，拆解出 base_url 与 mcp_url
  */
 function normalizeUrls(inputUrl) {
-  if (!inputUrl) return { baseUrl: '', mcpUrl: '' };
-  let cleaned = inputUrl.trim().replace(/\/+$/, '');
-  let baseUrl = '';
-  let mcpUrl = '';
+  if (!inputUrl) return { baseUrl: "", mcpUrl: "" };
+  let cleaned = inputUrl.trim().replace(/\/+$/, "");
+  let baseUrl = "";
+  let mcpUrl = "";
 
-  if (cleaned.endsWith('/mcp')) {
+  if (cleaned.endsWith("/mcp")) {
     mcpUrl = cleaned;
     baseUrl = cleaned.slice(0, -4);
   } else {
@@ -77,11 +94,17 @@ function findRepoRoot() {
   let topRoot = current;
 
   while (current !== path.dirname(current)) {
-    const hasGit = fs.existsSync(path.join(current, '.git'));
-    const hasSkillsAndReadme = fs.existsSync(path.join(current, 'skills')) && fs.existsSync(path.join(current, 'README.md'));
-    const hasSkillMd = fs.existsSync(path.join(current, 'SKILL.md'));
+    const hasGit = fs.existsSync(path.join(current, ".git"));
+    const hasSkillsAndReadme =
+      fs.existsSync(path.join(current, "skills")) &&
+      fs.existsSync(path.join(current, "README.md"));
+    const hasSkillMd = fs.existsSync(path.join(current, "SKILL.md"));
 
-    if (hasGit || hasSkillsAndReadme || (hasSkillMd && fs.existsSync(path.join(current, 'skills')))) {
+    if (
+      hasGit ||
+      hasSkillsAndReadme ||
+      (hasSkillMd && fs.existsSync(path.join(current, "skills")))
+    ) {
       topRoot = current;
     }
     current = path.dirname(current);
@@ -96,19 +119,21 @@ function collectOldUrls(rootDir) {
   const urlSet = new Set(KNOWN_DEFAULT_MCP_URLS);
 
   const candidateFiles = [
-    path.join(rootDir, 'trae/tduck/.mcp.json'),
-    path.join(rootDir, 'workbuddy/connector/tduck/mcp.json'),
-    path.join(rootDir, '.cursor/mcp.json'),
-    path.join(rootDir, 'skills/tduck/SKILL.md'),
-    path.join(rootDir, 'SKILL.md'),
-    path.join(rootDir, 'README.md')
+    path.join(rootDir, "trae/tduck/.mcp.json"),
+    path.join(rootDir, "workbuddy/connector/tduck/mcp.json"),
+    path.join(rootDir, ".cursor/mcp.json"),
+    path.join(rootDir, "skills/tduck/SKILL.md"),
+    path.join(rootDir, "SKILL.md"),
+    path.join(rootDir, "README.md"),
   ];
 
   for (const filePath of candidateFiles) {
     if (fs.existsSync(filePath)) {
       try {
-        const content = fs.readFileSync(filePath, 'utf-8');
-        const matches = content.matchAll(/https?:\/\/[^\s"'`)]+\/tduck-api(\/mcp)?/g);
+        const content = fs.readFileSync(filePath, "utf-8");
+        const matches = content.matchAll(
+          /https?:\/\/[^\s"'`)]+\/tduck-api(\/mcp)?/g,
+        );
         for (const m of matches) {
           const matchedUrl = m[0];
           const normalized = normalizeUrls(matchedUrl);
@@ -159,9 +184,9 @@ function collectFiles(dir, fileList = []) {
  * 对单文件执行替换
  */
 function replaceInFile(filePath, pairs, dryRun = false) {
-  let content = '';
+  let content = "";
   try {
-    content = fs.readFileSync(filePath, 'utf-8');
+    content = fs.readFileSync(filePath, "utf-8");
   } catch {
     return 0;
   }
@@ -180,7 +205,7 @@ function replaceInFile(filePath, pairs, dryRun = false) {
   }
 
   if (totalMatches > 0 && !dryRun) {
-    fs.writeFileSync(filePath, newContent, 'utf-8');
+    fs.writeFileSync(filePath, newContent, "utf-8");
   }
 
   return totalMatches;
@@ -194,15 +219,15 @@ function runBatchReplace({ newUrlInput, customRootDir, dryRun = false }) {
   const newUrls = normalizeUrls(newUrlInput);
   const oldMcpUrls = collectOldUrls(rootDir);
 
-  console.log('='.repeat(65));
-  console.log('  TDuck Skill 服务端点批量替换工具 (Node.js 原生版)');
-  console.log('='.repeat(65));
+  console.log("=".repeat(65));
+  console.log("  TDuck Skill 服务端点批量替换工具 (Node.js 原生版)");
+  console.log("=".repeat(65));
   console.log(`目标根目录 : ${rootDir}`);
-  console.log(`运行模式   : ${dryRun ? '[DRY RUN 预览模式]' : '[写入模式]'}`);
-  console.log('─'.repeat(65));
+  console.log(`运行模式   : ${dryRun ? "[DRY RUN 预览模式]" : "[写入模式]"}`);
+  console.log("─".repeat(65));
   console.log(`更新目标 MCP : ${newUrls.mcpUrl}`);
   console.log(`更新目标 Base: ${newUrls.baseUrl}`);
-  console.log('─'.repeat(65));
+  console.log("─".repeat(65));
 
   // 构建替换对：先替换具体的 /mcp 地址，再替换 Base 地址
   const replacePairs = [];
@@ -228,8 +253,8 @@ function runBatchReplace({ newUrlInput, customRootDir, dryRun = false }) {
   }
 
   if (uniquePairs.length === 0) {
-    console.log('提示: 当前仓库中所有配置地址与目标新地址一致，无需替换。');
-    console.log('='.repeat(65));
+    console.log("提示: 当前仓库中所有配置地址与目标新地址一致，无需替换。");
+    console.log("=".repeat(65));
     return;
   }
 
@@ -247,14 +272,18 @@ function runBatchReplace({ newUrlInput, customRootDir, dryRun = false }) {
     }
   }
 
-  console.log('─'.repeat(65));
+  console.log("─".repeat(65));
   if (dryRun) {
-    console.log(`预览完成！共发现 ${totalFilesChanged} 个文件待更新，合计 ${totalReplacements} 处地址。`);
-    console.log('移除 --dry-run 参数后即可实际应用修改。');
+    console.log(
+      `预览完成！共发现 ${totalFilesChanged} 个文件待更新，合计 ${totalReplacements} 处地址。`,
+    );
+    console.log("移除 --dry-run 参数后即可实际应用修改。");
   } else {
-    console.log(`替换成功！已完成 ${totalFilesChanged} 个文件的更新，共替换 ${totalReplacements} 处端点地址。`);
+    console.log(
+      `替换成功！已完成 ${totalFilesChanged} 个文件的更新，共替换 ${totalReplacements} 处端点地址。`,
+    );
   }
-  console.log('='.repeat(65));
+  console.log("=".repeat(65));
 }
 
 /**
@@ -268,17 +297,17 @@ async function main() {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--dry-run') {
+    if (arg === "--dry-run") {
       dryRun = true;
-    } else if (arg === '--url' && i + 1 < args.length) {
+    } else if (arg === "--url" && i + 1 < args.length) {
       newUrl = args[++i];
-    } else if (arg.startsWith('--url=')) {
+    } else if (arg.startsWith("--url=")) {
       newUrl = arg.slice(6);
-    } else if (arg === '--dir' && i + 1 < args.length) {
+    } else if (arg === "--dir" && i + 1 < args.length) {
       customRootDir = args[++i];
-    } else if (arg.startsWith('--dir=')) {
+    } else if (arg.startsWith("--dir=")) {
       customRootDir = arg.slice(6);
-    } else if (arg === '-h' || arg === '--help') {
+    } else if (arg === "-h" || arg === "--help") {
       console.log(`
 TDuck Skill 服务端点批量替换工具 (Node.js 原生版)
 
@@ -296,28 +325,33 @@ TDuck Skill 服务端点批量替换工具 (Node.js 原生版)
   node replace_endpoint.js --url https://form.example.com/tduck-api --dry-run
 `);
       process.exit(0);
-    } else if (!arg.startsWith('-') && !newUrl) {
+    } else if (!arg.startsWith("-") && !newUrl) {
       newUrl = arg;
     }
   }
 
   if (!newUrl) {
-    const rootDir = customRootDir ? path.resolve(customRootDir) : findRepoRoot();
+    const rootDir = customRootDir
+      ? path.resolve(customRootDir)
+      : findRepoRoot();
     const oldMcpUrls = collectOldUrls(rootDir);
 
-    console.log('='.repeat(65));
-    console.log('  TDuck Skill 服务端点批量替换工具 (Node.js 原生版)');
-    console.log('='.repeat(65));
-    console.log(`当前检测到的旧端点地址:\n  ${oldMcpUrls.join('\n  ')}\n`);
+    console.log("=".repeat(65));
+    console.log("  TDuck Skill 服务端点批量替换工具 (Node.js 原生版)");
+    console.log("=".repeat(65));
+    console.log(`当前检测到的旧端点地址:\n  ${oldMcpUrls.join("\n  ")}\n`);
 
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      output: process.stdout,
     });
 
-    const question = (query) => new Promise((resolve) => rl.question(query, resolve));
+    const question = (query) =>
+      new Promise((resolve) => rl.question(query, resolve));
     try {
-      const input = await question('请输入新的 TDuck 服务地址 (如 https://form.example.com/tduck-api): ');
+      const input = await question(
+        "请输入新的 TDuck 服务地址 (如 https://form.example.com/tduck-api): ",
+      );
       newUrl = input.trim();
     } finally {
       rl.close();
@@ -325,7 +359,7 @@ TDuck Skill 服务端点批量替换工具 (Node.js 原生版)
   }
 
   if (!newUrl) {
-    console.error('错误: 未输入有效的新地址！');
+    console.error("错误: 未输入有效的新地址！");
     process.exit(1);
   }
 
@@ -333,6 +367,6 @@ TDuck Skill 服务端点批量替换工具 (Node.js 原生版)
 }
 
 main().catch((err) => {
-  console.error('执行失败:', err);
+  console.error("执行失败:", err);
   process.exit(1);
 });

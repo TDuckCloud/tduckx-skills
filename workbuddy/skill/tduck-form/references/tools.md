@@ -1,6 +1,6 @@
 # TDuck MCP 工具完整参考手册
 
-本文档详细列出 TDuck（填鸭表单）开放平台对外开放的 **33 个 MCP 工具**，每个工具均包含详细用途、输入参数定义、参数子结构拆解、标准 JSON 输出示例、实战调用请求 Payload、行为约束要点与常见错误排查指引。
+本文档详细列出 TDuck（填鸭表单）开放平台对外开放的 **34 个 MCP 工具**，每个工具均包含详细用途、输入参数定义、参数子结构拆解、标准 JSON 输出示例、实战调用请求 Payload、行为约束要点与常见错误排查指引。
 
 > 工具的实际暴露名可能带客户端前缀（如 `mcp__tduck__list_forms`），按客户端实际识别的名字调用即可，本文统一使用标准裸名。
 
@@ -10,7 +10,8 @@
 
 | 类别 | 工具名称 | 描述 |
 | :--- | :--- | :--- |
-| **一、 表单生命周期与管理** | [`list_forms`](#list_forms) | 分页获取表单列表，支持关键字搜索、状态筛选与文件夹过滤 |
+| **一、 账号与身份信息** | [`get_current_user`](#get_current_user) | 获取当前登录账号的完整身份信息（用户ID、账号、昵称、手机号、邮箱、所属部门、角色、岗位及管理员状态） |
+| **二、 表单生命周期与管理** | [`list_forms`](#list_forms) | 分页获取表单列表，支持关键字搜索、状态筛选与文件夹过滤 |
 | | [`get_form_detail`](#get_form_detail) | 根据 formKey 获取表单完整设计结构（题目、设置、主题、逻辑） |
 | | [`create_form`](#create_form) | 极简模式创建全新表单（普通表单或在线考试） |
 | | [`copy_form`](#copy_form) | 快速复制已有表单的题目结构、设置与主题生成新表单 |
@@ -22,23 +23,23 @@
 | | [`stop_form`](#stop_form) | 停止表单收集，关闭对外公开填写通道 |
 | | [`delete_form`](#delete_form) | 逻辑删除指定表单及其关联的所有题目与回收数据 |
 | | [`update_form_basic`](#update_form_basic) | 快速修改表单名称和描述说明 |
-| **二、 单题精细化维护** | [`list_form_items`](#list_form_items) | 获取指定表单的题目列表明细（扁平模型） |
+| **三、 单题精细化维护** | [`list_form_items`](#list_form_items) | 获取指定表单的题目列表明细（扁平模型） |
 | | [`add_form_item`](#add_form_item) | 在指定表单末尾追加一道新题目 |
 | | [`update_form_item`](#update_form_item) | 根据题目 ID 精细修改指定题目的标题、必填、选项与分值 |
 | | [`delete_form_item`](#delete_form_item) | 从指定表单中物理删除某一道题目（删前必查 check_field_data） |
-| **三、 题目安全与防误删预检** | [`check_field_data`](#check_field_data) | 检查题目或选项是否已有填报数据，防止误删历史数据 |
-| **四、 附件与图片上传** | [`get_upload_ticket`](#get_upload_ticket) | 获取本地文件/图片免密直传预签名凭证及 curl 命令（本地文件唯一通道） |
+| **四、 题目安全与防误删预检** | [`check_field_data`](#check_field_data) | 检查题目或选项是否已有填报数据，防止误删历史数据 |
+| **五、 附件与图片上传** | [`get_upload_ticket`](#get_upload_ticket) | 获取本地文件/图片免密直传预签名凭证及 curl 命令（本地文件唯一通道） |
 | | [`upload_file`](#upload_file) | 传入网络图片链接（remoteUrl）由服务端自动抓取转存换取公网 URL |
-| **五、 文件夹归档管理** | [`list_folders`](#list_folders) | 获取当前用户的所有一级表单归档文件夹列表 |
+| **六、 文件夹归档管理** | [`list_folders`](#list_folders) | 获取当前用户的所有一级表单归档文件夹列表 |
 | | [`create_folder`](#create_folder) | 创建新的表单归档一级文件夹 |
 | | [`move_form_folder`](#move_form_folder) | 将表单移动归档到指定文件夹（0 表示移回根目录） |
-| **六、 表单填报数据管理** | [`query_form_data`](#query_form_data) | 分页查询表单已收集的数据（自动映射题目自定义 ID） |
+| **七、 表单填报数据管理** | [`query_form_data`](#query_form_data) | 分页查询表单已收集的数据（自动映射题目自定义 ID） |
 | | [`get_form_data_detail`](#get_form_data_detail) | 根据 dataId 查询单条填报数据的完整详细内容 |
 | | [`submit_form_data`](#submit_form_data) | 向表单录入一条新数据（直接使用题目自定义 ID 填报） |
 | | [`batch_submit_form_data`](#batch_submit_form_data) | 批量向表单写入多条填报数据（单批最多 100 条） |
 | | [`update_form_data`](#update_form_data) | 根据 dataId 局部修改单条已提交的数据内容 |
 | | [`delete_form_data`](#delete_form_data) | 根据 dataId 删除指定的单条填报数据 |
-| **七、 对外公开自助查询页 (Opensearch)** | [`list_opensearch_queries`](#list_opensearch_queries) | 查询表单对外公开自助查询页配置列表 |
+| **八、 对外公开自助查询页 (Opensearch)** | [`list_opensearch_queries`](#list_opensearch_queries) | 查询表单对外公开自助查询页配置列表 |
 | | [`get_opensearch_query`](#get_opensearch_query) | 查询指定对外公开查询页的详细规则配置 |
 | | [`create_opensearch_query`](#create_opensearch_query) | 为表单创建或配置对外公开查询页 |
 | | [`edit_opensearch_query`](#edit_opensearch_query) | 修改或启停指定表单的对外公开查询页 |
@@ -84,7 +85,56 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
 
 ---
 
-# 一、 表单生命周期与管理
+# 一、 账号与身份信息
+
+## get_current_user
+
+**用途**：获取当前认证/登录账号的完整身份信息与权限配置。包含用户唯一标识 ID、登录账号、用户昵称、手机号、邮箱、头像、所属部门信息（部门 ID、名称与负责人）、关联角色列表与权限标识（`roleKeys`）、所属角色组与岗位组、超级管理员状态（`admin`）以及最后登录时间与 IP。
+
+**输入参数**
+
+无入参（服务端自动从当前请求的 API Key 或 OAuth Token 安全上下文中解析登录用户信息）。
+
+**输出示例**
+
+```json
+{
+  "id": 1,
+  "userName": "admin",
+  "nickName": "超级管理员",
+  "email": "admin@tduckcloud.com",
+  "phonenumber": "13800138000",
+  "sex": "0",
+  "avatar": "https://cdn.example.com/avatar/admin.png",
+  "status": "0",
+  "deptId": 100,
+  "deptName": "研发中心",
+  "deptLeader": "张总",
+  "roles": ["超级管理员", "部门管理员"],
+  "roleKeys": ["admin", "dept_admin"],
+  "roleGroup": "超级管理员,部门管理员",
+  "postGroup": "技术总监",
+  "admin": true,
+  "loginIp": "127.0.0.1",
+  "loginDate": "2026-08-24 10:30:00",
+  "createTime": "2026-01-01 00:00:00"
+}
+```
+
+**调用示例**
+
+```json
+{}
+```
+
+**常见错误**
+
+- `未获取到当前登录用户` — API 凭证未传入或已失效，请检查 `Authorization` 请求头。
+- `用户不存在或已被删除` — 关联的用户账号已被注销或逻辑删除。
+
+---
+
+# 二、 表单生命周期与管理
 
 ## list_forms
 
@@ -270,7 +320,15 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
 | `defaultValue` | object | 否 | 题目默认初始值 |
 | `options` | array | 否 | 单选/多选/下拉等题型的选项列表。支持纯字符串数组 `["A", "B"]` 或对象数组 `[{"label":"A","value":"1"}]` |
 | `sort` | integer | 否 | 题目排序序号（数值越小越靠前，不传时按数组索引自增） |
+| `regList` | array | 否 | **题目正则表达式校验规则列表**。支持传入带首尾斜杠的标准 JS 正则（如 `/^1[3-9]\d{9}$/`）或普通正则（系统将自动补全首尾 `/`）。详见下方 `regList 结构表` |
 | `exam` | object | 否 | **在线考试专属评分配置**（仅在 `type: "EXAM"` 时允许传入，普通表单传入会被服务端拦截拒绝）。详见下方 `exam 结构表` |
+
+### `items[].regList` 结构表
+
+| 字段 | 类型 | 必填 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `pattern` | string | ✅ 是 | JavaScript 正则表达式（如 `/^1[3-9]\d{9}$/` 或 `^[a-zA-Z0-9_-]{4,16}$`，若未带首尾斜杠系统将自动补全） |
+| `message` | string | 否 | 校验不通过时的错误提示文案（如 `"请输入有效的中国大陆手机号"`） |
 
 ### `items[].exam` 结构表
 
