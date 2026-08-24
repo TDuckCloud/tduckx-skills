@@ -15,6 +15,7 @@
 | | [`get_form_detail`](#get_form_detail) | 根据 formKey 获取表单完整设计结构（题目、设置、主题、逻辑） |
 | | [`create_form`](#create_form) | 极简模式创建全新表单（普通表单或在线考试） |
 | | [`copy_form`](#copy_form) | 快速复制已有表单的题目结构、设置与主题生成新表单 |
+| | [`save_form_as_template`](#save_form_as_template) | 将已有表单转存为表单模板（支持个人与公共模板） |
 | | [`update_form`](#update_form) | 复合局部更新表单基础信息、题目、外观或全局设置 |
 | | [`update_form_theme`](#update_form_theme) | 单独更新表单主题配色、Logo、头图、封面与水印等视觉样式 |
 | | [`update_form_setting`](#update_form_setting) | 单独更新表单提交限制、IP/微信/账号限额、起止时间与防作弊设置 |
@@ -523,6 +524,48 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
 
 - `源表单不存在: xxx` — 传入的 `formKey` 无效。
 - `目标文件夹不存在` — 传入了不存在的 `folderId`。
+
+---
+
+## save_form_as_template
+
+**用途**：将已有表单转存为表单模板，完整保存题目结构、外观主题配色、跳题逻辑与全局提交设置。支持自定义模板名称、分类 ID、封面图及是否发布为系统公共模板。
+
+**输入参数**
+
+| 参数 | 类型 | 必填 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- | :--- |
+| `formKey` | string | ✅ 是 | - | 源表单全局唯一标识 Key（如 `"abc12345"`） |
+| `name` | string | 否 | 原表单名称 | 模板名称（不填则默认沿用原表单名称） |
+| `categoryId` | integer | 否 | `0` | 模板所属分类 ID（`0` 表示未分类） |
+| `description` | string | 否 | 原表单描述 | 模板描述说明（不填则默认沿用原表单描述） |
+| `coverImg` | string | 否 | 从主题提取 | 模板封面图 URL（不填则自动从表单主题头图/封面提取） |
+| `userId` | integer | 否 | 当前用户ID | 模板归属用户 ID（传入 `0` 表示创建系统公共模板，需具备管理员权限；不传则默认为当前登录用户的个人私有模板） |
+
+**输出示例**
+
+```
+表单转模板成功！生成的模板 Key 为: tpl_AbCdEf12
+```
+
+**调用示例**
+
+```json
+{
+  "formKey": "party_2025",
+  "name": "2025 员工活动报名标准模板",
+  "categoryId": 1,
+  "description": "适用于公司年会、员工活动报名的标准表单模板",
+  "userId": 0
+}
+```
+
+**常见错误**
+
+- `源表单 Key 不能为空` — 未传入 `formKey`。
+- `表单不存在或已被删除` — 传入的 `formKey` 不存在。
+- `无表单访问权限: xxx` — 当前登录用户无权访问该表单。
+- `没有创建公开模板的权限` — `userId` 传入 `0` 但当前用户缺少 `form:template:create` 权限。
 
 ---
 
