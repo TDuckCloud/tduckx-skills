@@ -16,6 +16,7 @@
 | | [`create_form`](#create_form) | 极简模式创建全新表单（普通表单或在线考试） |
 | | [`copy_form`](#copy_form) | 快速复制已有表单的题目结构、设置与主题生成新表单 |
 | | [`save_form_as_template`](#save_form_as_template) | 将已有表单转存为表单模板（支持个人与公共模板） |
+| | [`list_template_categories`](#list_template_categories) | 获取所有可用的表单模板分类列表 |
 | | [`update_form`](#update_form) | 复合局部更新表单基础信息、题目、外观或全局设置 |
 | | [`update_form_theme`](#update_form_theme) | 单独更新表单主题配色、Logo、头图、封面与水印等视觉样式 |
 | | [`update_form_setting`](#update_form_setting) | 单独更新表单提交限制、IP/微信/账号限额、起止时间与防作弊设置 |
@@ -566,6 +567,44 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
 - `表单不存在或已被删除` — 传入的 `formKey` 不存在。
 - `无表单访问权限: xxx` — 当前登录用户无权访问该表单。
 - `没有创建公开模板的权限` — `userId` 传入 `0` 但当前用户缺少 `form:template:create` 权限。
+
+---
+
+## list_template_categories
+
+**用途**：获取系统所有可用的表单模板分类列表（包含分类 ID、分类名称及排序权重）。常用于在表单另存为模板（`save_form_as_template`）时选择指定的 `categoryId`。
+
+**输入参数**
+
+无入参。
+
+**输出示例**
+
+```json
+[
+  {
+    "id": 1,
+    "name": "人力行政",
+    "sort": 100
+  },
+  {
+    "id": 2,
+    "name": "客户服务",
+    "sort": 90
+  },
+  {
+    "id": 3,
+    "name": "运营活动",
+    "sort": 80
+  }
+]
+```
+
+**调用示例**
+
+```json
+{}
+```
 
 ---
 
