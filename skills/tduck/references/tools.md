@@ -541,7 +541,7 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
 | `categoryId` | integer | 否 | `0` | 模板所属分类 ID（`0` 表示未分类） |
 | `description` | string | 否 | 原表单描述 | 模板描述说明（不填则默认沿用原表单描述） |
 | `coverImg` | string | 否 | 从主题提取 | 模板封面图 URL（不填则自动从表单主题头图/封面提取） |
-| `userId` | integer | 否 | 当前用户ID | 模板归属用户 ID（传入 `0` 表示创建系统公共模板，需具备管理员权限；不传则默认为当前登录用户的个人私有模板） |
+| `isPublic` | boolean | 否 | `false` | 是否创建为系统公共模板（`true` 表示公共模板，所有人可见，需管理员或公开模板创建权限；`false` 为个人私有模板） |
 
 **输出示例**
 
@@ -557,7 +557,7 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
   "name": "2025 员工活动报名标准模板",
   "categoryId": 1,
   "description": "适用于公司年会、员工活动报名的标准表单模板",
-  "userId": 0
+  "isPublic": true
 }
 ```
 
@@ -566,7 +566,7 @@ Authorization: Basic <base64(APP_ID:APP_SECRET)>
 - `源表单 Key 不能为空` — 未传入 `formKey`。
 - `表单不存在或已被删除` — 传入的 `formKey` 不存在。
 - `无表单访问权限: xxx` — 当前登录用户无权访问该表单。
-- `没有创建公开模板的权限` — `userId` 传入 `0` 但当前用户缺少 `form:template:create` 权限。
+- `没有创建公开模板的权限` — `isPublic` 传入 `true` 但当前用户缺少 `form:template:create` 权限。
 
 ---
 
